@@ -43,7 +43,7 @@ namespace CfgDotNet
             _cfgContainer = JsonConvert.DeserializeObject<CfgContainer>(json.ToString());
             _activeEnvironment = environment;
         }
-
+        
         public Dictionary<string, CfgConnectionSetting> ConnectionStrings
         {
             get { return _cfgContainer.Environments[_activeEnvironment].ConnectionStrings; }
@@ -59,7 +59,7 @@ namespace CfgDotNet
             get { return _activeEnvironment; }
         }
     }
-
+  
     public class CfgContainer
     {
         public Dictionary<string, Cfg> Environments { get; set; }
