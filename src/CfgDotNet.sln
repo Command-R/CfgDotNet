@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CfgDotNet", "CfgDotNet\CfgDotNet.csproj", "{ADCCF6F8-46D2-4470-B4C0-41AFBE6863BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CfgDotNet.Test", "CfgDotNet.Test\CfgDotNet.Test.csproj", "{DC6924BF-837E-4DE6-9CB9-89A95B7976F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADCCF6F8-46D2-4470-B4C0-41AFBE6863BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADCCF6F8-46D2-4470-B4C0-41AFBE6863BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADCCF6F8-46D2-4470-B4C0-41AFBE6863BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADCCF6F8-46D2-4470-B4C0-41AFBE6863BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC6924BF-837E-4DE6-9CB9-89A95B7976F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC6924BF-837E-4DE6-9CB9-89A95B7976F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC6924BF-837E-4DE6-9CB9-89A95B7976F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC6924BF-837E-4DE6-9CB9-89A95B7976F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
