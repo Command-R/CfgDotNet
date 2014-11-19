@@ -10,7 +10,9 @@ namespace CfgDotNet
     {
         public readonly string CfgFileName;
         private readonly CfgContainer _cfgContainer;
-        private readonly string _activeEnvironment;
+        private readonly string _activeEnvironmentName;
+        private Dictionary<string, object> _configSections;
+        private CfgEnvironment _activeEnvironment;
 
         public CfgManager()
         {
@@ -23,49 +25,61 @@ namespace CfgDotNet
             string cfgPath = Path.Combine(dir, CfgFileName);
             string json = File.ReadAllText(cfgPath);
             _cfgContainer = JsonConvert.DeserializeObject<CfgContainer>(json);
-            _activeEnvironment = File.ReadAllText(Path.Combine(dir, "environment.txt")).Trim();
-            if (!_cfgContainer.Environments.ContainsKey(_activeEnvironment))
+            _activeEnvironmentName = File.ReadAllText(Path.Combine(dir, "environment.txt")).Trim();
+            if (!_cfgContainer.Environments.ContainsKey(_activeEnvironmentName))
             {
                 throw new Exception("There is not a proper active environment configured for CfgDotNet");
             }
         }
 
-        public CfgManager(FileInfo fileInfo, string environment)
+        public CfgManager(FileInfo fileInfo, string environmentName)
+            : this(File.ReadAllText(fileInfo.FullName), environmentName)
         {
-            string json = File.ReadAllText(fileInfo.FullName);
-            var obj = JObject.Parse(json);
-            
-            _cfgContainer = JsonConvert.DeserializeObject<CfgContainer>(json);
-            _activeEnvironment = environment;
+
         }
 
-        public CfgManager(string json, string environment)
+        public CfgManager(string json, string environmentName)
         {
             _cfgContainer = JsonConvert.DeserializeObject<CfgContainer>(json);
-            _activeEnvironment = environment;
+            _activeEnvironmentName = environmentName;
+            _activeEnvironment = _cfgContainer.Environments[_activeEnvironmentName];
+            _configSections = _activeEnvironment;
         }
 
         public Dictionary<string, CfgConnectionSetting> ConnectionStrings
         {
-            get { return _cfgContainer.Environments[_activeEnvironment].ConnectionStrings; }
+            get
+            {
+                return ((JObject)
+                    _cfgContainer.Environments[_activeEnvironmentName]["connectionStrings"]).ToObject<Dictionary<string, CfgConnectionSetting>>();
+            }
         }
-
-        //public static class AppSettingsEx
-        //{
-        //    public static T Get<T>(string keyName)
-        //    {
-        //        return (T) _cfgContainer.Environments[_activeEnvironment].AppSettings;
-        //    }
-        //}
 
         public Dictionary<string, string> AppSettings
         {
-            get { return _cfgContainer.Environments[_activeEnvironment].AppSettings; }
+            get 
+            {
+                return ((JObject) _cfgContainer.Environments[_activeEnvironmentName]["appSettings"]).ToObject<Dictionary<string, string>>();
+            }
         }
 
-        public string ActiveEnvironment
+        public object this[string key]
         {
-            get { return _activeEnvironment; }
+            get
+            {
+                // todo: best way to handle getting from JObject to object?
+                return ((JObject)_cfgContainer.Environments[_activeEnvironmentName][key]).ToObject<object>();
+            }
+        }
+
+        public T GetConfigSection<T>(string key)
+        {
+            return ((JObject)_cfgContainer.Environments[_activeEnvironmentName][key]).ToObject<T>();
+        }
+
+        public string ActiveEnvironmentName
+        {
+            get { return _activeEnvironmentName; }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CfgDotNet.Test.Model;
 using NUnit.Framework;
 
 namespace CfgDotNet.Test
@@ -23,7 +24,7 @@ namespace CfgDotNet.Test
             }
             _cfgManagerProd = new CfgManager(_json, "prod");
         }
-        
+
         [TestCase("MainConnection", Result = "server=prod.databaseserver.com;database=MyDB_PROD;uid=User_PROD;pwd=pa55w0rd!_PROD")]
         public string CanGetConnectionString(string connectionName)
         {
@@ -37,11 +38,19 @@ namespace CfgDotNet.Test
             return bool.Parse(_cfgManagerProd.AppSettings[keyName]);
         }
 
-        [TestCase("elasticsearch", "user", Result = "elastic-user-prod")]
-        public string CanGetSpecialValue(string sectionName, string keyName)
+        [Test]
+        public void CanGetSpecialValueSimpleType()
         {
-            return "";
+            string username = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>("elasticsearch").User;
+            Assert.AreEqual(username, "elastic-user-prod");
         }
 
+        [Test]
+        public void CanGetSpecialValueComplexType()
+        {
+            Uri baseUrl = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>("elasticsearch").BaseUrl;
+            const string url = "https://prod.fakeelasticserver.com:9200";
+            Assert.AreEqual(new Uri(url), baseUrl);
+        }
     }
 }
