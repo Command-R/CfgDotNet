@@ -74,6 +74,11 @@ namespace CfgDotNet
             }
         }
 
+        public bool ContainsConfigSection(string key)
+        {
+            return _cfgContainer.Environments[_cfgContainer.ActiveEnvironment].ContainsKey(key);
+        }
+
         public T GetConfigSection<T>(string key)
         {
             return ((JObject)_cfgContainer.Environments[_cfgContainer.ActiveEnvironment][key]).ToObject<T>();

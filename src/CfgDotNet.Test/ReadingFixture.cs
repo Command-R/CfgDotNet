@@ -60,5 +60,13 @@ namespace CfgDotNet.Test
             _cfgManagerProd.GetConfigSection("elasticsearch", settings);
             Assert.AreEqual("elastic-user-prod", settings.User);
         }
+
+        [TestCase("doesn't exist", false)]
+        [TestCase("elasticsearch", true)]
+        public void TestContainsConfigSection(string key, bool expected)
+        {
+            var exists = _cfgManagerProd.ContainsConfigSection(key);
+            Assert.AreEqual(expected, exists);
+        }
     }
 }
