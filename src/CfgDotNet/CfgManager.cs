@@ -84,11 +84,11 @@ namespace CfgDotNet
             return ((JObject)_cfgContainer.Environments[_cfgContainer.ActiveEnvironment][key]).ToObject<T>();
         }
 
-        public T GetConfigSection<T>(string key, T settings)
+        public T GetConfigSection<T>(string key, T section)
         {
-            var obj = ((JObject)_cfgContainer.Environments[_cfgContainer.ActiveEnvironment][key]);
-            JsonConvert.PopulateObject(obj.ToString(), settings);
-            return settings;
+            var jObject = ((JObject)_cfgContainer.Environments[_cfgContainer.ActiveEnvironment][key]);
+            JsonConvert.PopulateObject(jObject.ToString(), section);
+            return section;
         }
 
         public string ActiveEnvironmentName
