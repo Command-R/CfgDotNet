@@ -22,7 +22,7 @@ namespace CfgDotNet.Test
             {
                 throw new Exception("The good-cfg.json is not valid JSON");
             }
-            _cfgManagerProd = new CfgManager(_json, "prod");
+            _cfgManagerProd = new CfgManager(_json);
         }
 
         [TestCase("MainConnection", Result = "server=prod.databaseserver.com;database=MyDB_PROD;uid=User_PROD;pwd=pa55w0rd!_PROD")]

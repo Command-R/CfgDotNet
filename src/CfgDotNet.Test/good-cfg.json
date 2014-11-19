@@ -1,4 +1,5 @@
 ﻿{
+   "activeEnvironment": "prod",
    "environments":{
       "dev":{
          "connectionStrings":{

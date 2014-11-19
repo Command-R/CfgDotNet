@@ -10,7 +10,6 @@ namespace CfgDotNet
     {
         public readonly string CfgFileName;
         private readonly CfgContainer _cfgContainer;
-        private readonly string _activeEnvironmentName;
         private Dictionary<string, object> _configSections;
         private CfgEnvironment _activeEnvironment;
 
@@ -25,24 +24,27 @@ namespace CfgDotNet
             string cfgPath = Path.Combine(dir, CfgFileName);
             string json = File.ReadAllText(cfgPath);
             _cfgContainer = JsonConvert.DeserializeObject<CfgContainer>(json);
-            _activeEnvironmentName = File.ReadAllText(Path.Combine(dir, "environment.txt")).Trim();
-            if (!_cfgContainer.Environments.ContainsKey(_activeEnvironmentName))
+            _cfgContainer.ActiveEnvironment = File.ReadAllText(Path.Combine(dir, "environment.txt")).Trim();
+            if (!_cfgContainer.Environments.ContainsKey(_cfgContainer.ActiveEnvironment))
             {
                 throw new Exception("There is not a proper active environment configured for CfgDotNet");
             }
         }
 
-        public CfgManager(FileInfo fileInfo, string environmentName)
+        public CfgManager(FileInfo fileInfo, string environmentName = null)
             : this(File.ReadAllText(fileInfo.FullName), environmentName)
         {
 
         }
 
-        public CfgManager(string json, string environmentName)
+        public CfgManager(string json, string environmentName = null)
         {
             _cfgContainer = JsonConvert.DeserializeObject<CfgContainer>(json);
-            _activeEnvironmentName = environmentName;
-            _activeEnvironment = _cfgContainer.Environments[_activeEnvironmentName];
+            if (environmentName != null)
+            {
+                _cfgContainer.ActiveEnvironment = environmentName;
+            }
+            _activeEnvironment = _cfgContainer.Environments[_cfgContainer.ActiveEnvironment];
             _configSections = _activeEnvironment;
         }
 
@@ -51,7 +53,7 @@ namespace CfgDotNet
             get
             {
                 return ((JObject)
-                    _cfgContainer.Environments[_activeEnvironmentName]["connectionStrings"]).ToObject<Dictionary<string, CfgConnectionSetting>>();
+                    _cfgContainer.Environments[_cfgContainer.ActiveEnvironment]["connectionStrings"]).ToObject<Dictionary<string, CfgConnectionSetting>>();
             }
         }
 
@@ -59,7 +61,7 @@ namespace CfgDotNet
         {
             get 
             {
-                return ((JObject) _cfgContainer.Environments[_activeEnvironmentName]["appSettings"]).ToObject<Dictionary<string, string>>();
+                return ((JObject)_cfgContainer.Environments[_cfgContainer.ActiveEnvironment]["appSettings"]).ToObject<Dictionary<string, string>>();
             }
         }
 
@@ -68,25 +70,25 @@ namespace CfgDotNet
             get
             {
                 // todo: best way to handle getting from JObject to object?
-                return ((JObject)_cfgContainer.Environments[_activeEnvironmentName][key]).ToObject<object>();
+                return ((JObject)_cfgContainer.Environments[_cfgContainer.ActiveEnvironment][key]).ToObject<object>();
             }
         }
 
         public T GetConfigSection<T>(string key)
         {
-            return ((JObject)_cfgContainer.Environments[_activeEnvironmentName][key]).ToObject<T>();
+            return ((JObject)_cfgContainer.Environments[_cfgContainer.ActiveEnvironment][key]).ToObject<T>();
         }
 
         public T GetConfigSection<T>(string key, T settings)
         {
-            var obj = ((JObject) _cfgContainer.Environments[_activeEnvironmentName][key]);
+            var obj = ((JObject)_cfgContainer.Environments[_cfgContainer.ActiveEnvironment][key]);
             JsonConvert.PopulateObject(obj.ToString(), settings);
             return settings;
         }
 
         public string ActiveEnvironmentName
         {
-            get { return _activeEnvironmentName; }
+            get { return _cfgContainer.ActiveEnvironment; }
         }
     }
 }
