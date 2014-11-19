@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
+using Newtonsoft.Json.Linq;
 
 namespace CfgDotNet
 {
-    public class CfgEnvironment : Dictionary<string, object>
+    internal class CfgEnvironment : Dictionary<string, JObject>
     {
         //public Dictionary<string, CfgConnectionSetting> ConnectionStrings { get; set; }
         //public Dictionary<string, string> AppSettings { get; set; }
