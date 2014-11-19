@@ -45,7 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CfgDotNet.cs" />
+    <Compile Include="CfgEnvironment.cs" />
+    <Compile Include="CfgContainer.cs" />
+    <Compile Include="CfgConnectionSetting.cs" />
+    <Compile Include="CfgManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

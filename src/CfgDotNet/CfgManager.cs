@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-// ReSharper disable once CheckNamespace
 namespace CfgDotNet
 {
     public class CfgManager
@@ -31,23 +30,33 @@ namespace CfgDotNet
             }
         }
 
-        public CfgManager(string filename, string environment)
+        public CfgManager(FileInfo fileInfo, string environment)
         {
-            string json = File.ReadAllText(filename);
+            string json = File.ReadAllText(fileInfo.FullName);
+            var obj = JObject.Parse(json);
+            
             _cfgContainer = JsonConvert.DeserializeObject<CfgContainer>(json);
             _activeEnvironment = environment;
         }
 
-        public CfgManager(StringBuilder json, string environment)
+        public CfgManager(string json, string environment)
         {
-            _cfgContainer = JsonConvert.DeserializeObject<CfgContainer>(json.ToString());
+            _cfgContainer = JsonConvert.DeserializeObject<CfgContainer>(json);
             _activeEnvironment = environment;
         }
-        
+
         public Dictionary<string, CfgConnectionSetting> ConnectionStrings
         {
             get { return _cfgContainer.Environments[_activeEnvironment].ConnectionStrings; }
         }
+
+        //public static class AppSettingsEx
+        //{
+        //    public static T Get<T>(string keyName)
+        //    {
+        //        return (T) _cfgContainer.Environments[_activeEnvironment].AppSettings;
+        //    }
+        //}
 
         public Dictionary<string, string> AppSettings
         {
@@ -58,22 +67,5 @@ namespace CfgDotNet
         {
             get { return _activeEnvironment; }
         }
-    }
-  
-    public class CfgContainer
-    {
-        public Dictionary<string, Cfg> Environments { get; set; }
-    }
-
-    public class Cfg
-    {
-        public Dictionary<string, CfgConnectionSetting> ConnectionStrings { get; set; }
-        public Dictionary<string, string> AppSettings { get; set; }
-    }
-
-    public class CfgConnectionSetting
-    {
-        public string ProviderName { get; set; }
-        public string ConnectionString { get; set; }
     }
 }
