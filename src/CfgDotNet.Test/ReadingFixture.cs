@@ -42,7 +42,7 @@ namespace CfgDotNet.Test
         public void CanGetSpecialValueSimpleType()
         {
             string username = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>("elasticsearch").User;
-            Assert.AreEqual(username, "elastic-user-prod");
+            Assert.AreEqual("elastic-user-prod", username);
         }
 
         [Test]
@@ -51,6 +51,14 @@ namespace CfgDotNet.Test
             Uri baseUrl = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>("elasticsearch").BaseUrl;
             const string url = "https://prod.fakeelasticserver.com:9200";
             Assert.AreEqual(new Uri(url), baseUrl);
+        }
+
+        [Test]
+        public void CanPopulateObjectWithSpecialSection()
+        {
+            var settings = new ElasticsearchSettings();
+            _cfgManagerProd.GetConfigSection("elasticsearch", settings);
+            Assert.AreEqual("elastic-user-prod", settings.User);
         }
     }
 }
