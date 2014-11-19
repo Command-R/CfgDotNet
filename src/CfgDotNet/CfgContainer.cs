@@ -2,8 +2,9 @@
 
 namespace CfgDotNet
 {
-    public class CfgContainer
+    internal class CfgContainer
     {
+        public string ActiveEnvironment { get; set; }
         public Dictionary<string, CfgEnvironment> Environments { get; set; }
     }
 }

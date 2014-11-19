@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CfgDotNet.Test.Model;
 using NUnit.Framework;
 
@@ -22,7 +18,7 @@ namespace CfgDotNet.Test
             {
                 throw new Exception("The good-cfg.json is not valid JSON");
             }
-            _cfgManagerProd = new CfgManager(_json, "prod");
+            _cfgManagerProd = new CfgManager(_json);
         }
 
         [TestCase("MainConnection", Result = "server=prod.databaseserver.com;database=MyDB_PROD;uid=User_PROD;pwd=pa55w0rd!_PROD")]
@@ -42,7 +38,7 @@ namespace CfgDotNet.Test
         public void CanGetSpecialValueSimpleType()
         {
             string username = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>("elasticsearch").User;
-            Assert.AreEqual(username, "elastic-user-prod");
+            Assert.AreEqual("elastic-user-prod", username);
         }
 
         [Test]
@@ -51,6 +47,22 @@ namespace CfgDotNet.Test
             Uri baseUrl = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>("elasticsearch").BaseUrl;
             const string url = "https://prod.fakeelasticserver.com:9200";
             Assert.AreEqual(new Uri(url), baseUrl);
+        }
+
+        [Test]
+        public void CanPopulateObjectWithSpecialSection()
+        {
+            var settings = new ElasticsearchSettings();
+            _cfgManagerProd.GetConfigSection("elasticsearch", settings);
+            Assert.AreEqual("elastic-user-prod", settings.User);
+        }
+
+        [TestCase("doesn't exist", false)]
+        [TestCase("elasticsearch", true)]
+        public void TestContainsConfigSection(string key, bool expected)
+        {
+            var exists = _cfgManagerProd.ContainsConfigSection(key);
+            Assert.AreEqual(expected, exists);
         }
     }
 }
