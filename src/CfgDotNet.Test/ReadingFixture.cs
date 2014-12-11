@@ -7,18 +7,17 @@ namespace CfgDotNet.Test
     [TestFixture]
     public class ReadingFixture
     {
-        private string _json;
         private CfgManager _cfgManagerProd;
 
         [SetUp]
         public void SetUp()
         {
-            _json = Util.GetEmbeddedResourceText("CfgDotNet.Test.good-cfg.json");
-            if (!Util.IsValidJson(_json))
+            var json = Util.GetEmbeddedResourceText("CfgDotNet.Test.good-cfg.json");
+            if (!Util.IsValidJson(json))
             {
                 throw new Exception("The good-cfg.json is not valid JSON");
             }
-            _cfgManagerProd = new CfgManager(_json);
+            _cfgManagerProd = new CfgManager(null, json);
         }
 
         [TestCase("MainConnection", Result = "server=prod.databaseserver.com;database=MyDB_PROD;uid=User_PROD;pwd=pa55w0rd!_PROD")]
@@ -37,14 +36,14 @@ namespace CfgDotNet.Test
         [Test]
         public void CanGetSpecialValueSimpleType()
         {
-            string username = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>("elasticsearch").User;
+            var username = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>("elasticsearch").User;
             Assert.AreEqual("elastic-user-prod", username);
         }
 
         [Test]
         public void CanGetSpecialValueComplexType()
         {
-            Uri baseUrl = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>("elasticsearch").BaseUrl;
+            var baseUrl = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>("elasticsearch").BaseUrl;
             const string url = "https://prod.fakeelasticserver.com:9200";
             Assert.AreEqual(new Uri(url), baseUrl);
         }
@@ -57,12 +56,42 @@ namespace CfgDotNet.Test
             Assert.AreEqual("elastic-user-prod", settings.User);
         }
 
-        [TestCase("doesn't exist", false)]
-        [TestCase("elasticsearch", true)]
-        public void TestContainsConfigSection(string key, bool expected)
+        [TestCase("doesn't exist", Result = false)]
+        [TestCase("elasticsearch", Result = true)]
+        public bool TestContainsConfigSection(string key)
         {
-            var exists = _cfgManagerProd.ContainsConfigSection(key);
-            Assert.AreEqual(expected, exists);
+            return _cfgManagerProd.ContainsConfigSection(key);
+        }
+
+        [Test]
+        public void CanLoadMultipleFilesForEnvironment()
+        {
+            var file1 = Util.GetEmbeddedResourceText("CfgDotNet.Test.good-cfg.json");
+            const string file2 = @"{""activeEnvironment"":""dev""}";
+
+            var cfg = new CfgManager(null, file1, file2);
+
+            Assert.AreEqual("dev", cfg.ActiveEnvironmentName);
+        }
+
+        [Test]
+        public void CanLoadMultipleFilesForCustomSections()
+        {
+            var file1 = Util.GetEmbeddedResourceText("CfgDotNet.Test.good-cfg.json");
+            const string file2 = @"{""environments"":{""prod"":{""elasticsearch"":{""user"":""elastic-user-test""}}}}";
+
+            var cfg = new CfgManager(null, file1, file2);
+            var settings = new ElasticsearchSettings();
+            var user = cfg.GetConfigSection("elasticsearch", settings).User;
+
+            Assert.AreEqual("elastic-user-test", user);
+        }
+
+        [Test]
+        public void CanLoadByPartialFilename()
+        {
+            var cfg = new CfgManager(null, @"good-cfg.json");
+            Assert.AreEqual("prod", cfg.ActiveEnvironmentName);
         }
     }
 }
