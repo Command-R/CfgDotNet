@@ -55,7 +55,9 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="good-cfg.json" />
+    <EmbeddedResource Include="good-cfg.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
