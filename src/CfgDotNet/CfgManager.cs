@@ -122,7 +122,8 @@ namespace CfgDotNet
 
             if (!_cfgContainer.Environments.ContainsKey(_cfgContainer.ActiveEnvironment))
             {
-                throw new Exception("There is not a proper active environment configured for CfgDotNet");
+                throw new Exception("There is not a proper active environment configured for CfgDotNet: "
+                                    + _cfgContainer.ActiveEnvironment);
             }
         }
 
