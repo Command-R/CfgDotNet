@@ -13,7 +13,7 @@ namespace CfgDotNet
         public CfgManager(string activeEnvironment = null, params string[] jsonPathsOrData)
         {
             var jsonStrings = LoadJsonPathsOrData(jsonPathsOrData);
-            
+
             //load Container
             _cfgContainer = new CfgContainer();
             foreach (var json in jsonStrings)
@@ -79,33 +79,46 @@ namespace CfgDotNet
                 _cfgContainer.ActiveEnvironment = container.ActiveEnvironment;
             }
 
+            CfgEnvironment baseEnvironment = null;
+            if (!string.IsNullOrWhiteSpace(container.BaseEnvironment))
+            {
+                baseEnvironment = container.Environments[container.BaseEnvironment];
+            }
+
             foreach (var newEnvironmentItem in container.Environments)
             {
-                //If Environment doesn't already exist, add it as-is
-                if (!_cfgContainer.Environments.ContainsKey(newEnvironmentItem.Key))
+                if (baseEnvironment != null && newEnvironmentItem.Key != container.BaseEnvironment)
                 {
-                    _cfgContainer.Environments[newEnvironmentItem.Key] = newEnvironmentItem.Value;
+                    MergeInEnvironment(newEnvironmentItem.Key, baseEnvironment);
+                }
+                MergeInEnvironment(newEnvironmentItem.Key, newEnvironmentItem.Value);
+            }
+        }
+
+        private void MergeInEnvironment(string key, CfgEnvironment newEnvironment)
+        {
+            //If Environment doesn't already exist, add it
+            if (!_cfgContainer.Environments.ContainsKey(key))
+            {
+                _cfgContainer.Environments[key] = new CfgEnvironment();
+            }
+
+            //We need to merge the new Environment items into the old
+            var existingEnvironment = _cfgContainer.Environments[key];
+            foreach (var newItem in newEnvironment)
+            {
+                if (!existingEnvironment.ContainsKey(newItem.Key))
+                {
+                    existingEnvironment[newItem.Key] = new JObject(newItem.Value);
                     continue;
                 }
 
-                //We need to merge the new Environment items into the old
-                var existingEnvironment = _cfgContainer.Environments[newEnvironmentItem.Key];
-                var newEnvironment = newEnvironmentItem.Value;
-                foreach (var newItem in newEnvironment)
+                //Merge jObjects
+                var existingItem = existingEnvironment[newItem.Key];
+                existingItem.Merge(newItem.Value, new JsonMergeSettings
                 {
-                    if (!existingEnvironment.ContainsKey(newItem.Key))
-                    {
-                        existingEnvironment[newItem.Key] = newItem.Value;
-                        continue;
-                    }
-
-                    //Merge jObjects
-                    var existingItem = existingEnvironment[newItem.Key];
-                    existingItem.Merge(newItem.Value, new JsonMergeSettings
-                    {
-                        MergeArrayHandling = MergeArrayHandling.Union
-                    });
-                }
+                    MergeArrayHandling = MergeArrayHandling.Union
+                });
             }
         }
 
@@ -122,7 +135,8 @@ namespace CfgDotNet
 
             if (!_cfgContainer.Environments.ContainsKey(_cfgContainer.ActiveEnvironment))
             {
-                throw new Exception("There is not a proper active environment configured for CfgDotNet");
+                throw new Exception("There is not a proper active environment configured for CfgDotNet: "
+                                    + _cfgContainer.ActiveEnvironment);
             }
         }
 
@@ -130,17 +144,21 @@ namespace CfgDotNet
         {
             get
             {
-                return ActiveEnvironment["connectionStrings"].ToObject<Dictionary<string, CfgConnectionSetting>>();
+                return _connectionStrings
+                    ?? (_connectionStrings = ActiveEnvironment["connectionStrings"].ToObject<Dictionary<string, CfgConnectionSetting>>());
             }
         }
+        private Dictionary<string, CfgConnectionSetting> _connectionStrings;
 
         public Dictionary<string, string> AppSettings
         {
             get
             {
-                return ActiveEnvironment["appSettings"].ToObject<Dictionary<string, string>>();
+                return _appSettings
+                    ?? (_appSettings = ActiveEnvironment["appSettings"].ToObject<Dictionary<string, string>>());
             }
         }
+        private Dictionary<string, string> _appSettings;
 
         public object this[string key]
         {
@@ -154,6 +172,12 @@ namespace CfgDotNet
         public bool ContainsConfigSection(string key)
         {
             return ActiveEnvironment.ContainsKey(key);
+        }
+
+        public T GetConfigSection<T>()
+        {
+            var key = typeof (T).Name;
+            return ActiveEnvironment[key].ToObject<T>();
         }
 
         public T GetConfigSection<T>(string key)
