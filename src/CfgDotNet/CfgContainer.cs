@@ -11,6 +11,7 @@ namespace CfgDotNet
         }
 
         public string ActiveEnvironment { get; set; }
+        public string BaseEnvironment { get; set; }
         public Dictionary<string, CfgEnvironment> Environments { get; set; }
     }
 

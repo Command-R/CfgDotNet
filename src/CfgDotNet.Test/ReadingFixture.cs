@@ -93,5 +93,24 @@ namespace CfgDotNet.Test
             var cfg = new CfgManager(null, @"good-cfg.json");
             Assert.AreEqual("prod", cfg.ActiveEnvironmentName);
         }
+
+        [Test]
+        public void CanLoadSectionByTypeName()
+        {
+            var section = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>();
+            Assert.AreEqual("ok", section.DefaultIndex);
+        }
+
+        [Test]
+        public void CanLoadBaseEnvironmentData()
+        {
+            Assert.AreEqual("ok", _cfgManagerProd.AppSettings["baseOnlySetting"]);
+        }
+
+        [Test]
+        public void CanBaseEnvironmentDataBeOverridden()
+        {
+            Assert.AreEqual("System.Data.SqlClient", _cfgManagerProd.ConnectionStrings["MainConnection"].ProviderName);
+        }
     }
 }
