@@ -106,7 +106,7 @@ new SettingsManager()
     .AddProvider(new AppSettingsSettingsProvider())
     .AddProvider(new CfgDotNetSettingsProvider(environment, cfgPath))
     .AddSettings(assemblies)
-    .AddProvider<Settings>(x => new SqlDatabaseSettingsProvider(x.ConnectionString))
+    .AddProvider<DbSettings>(x => new SqlDatabaseSettingsProvider(x.ConnectionString))
     .LoadSettingsFromProviders()
     .Validate()
     .ForEach(x => Container.RegisterSingle(x.GetType(), x));
