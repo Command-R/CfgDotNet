@@ -26,7 +26,7 @@
                 "user": "elastic-user-dev",
                 "password": "0d35e633c2cf40a78fb6537294a084f8_dev",
                 "baseUrl": "https://dev.fakeelasticserver.com:9200",
-                "defaultIndex": "those_documents"
+                "defaultIndex": "dev_documents"
             }
         },
         "prod": {
@@ -43,7 +43,7 @@
                 "user": "elastic-user-prod",
                 "password": "847d80d268e842dd9ff4562c3117417c_prod",
                 "baseUrl": "https://prod.fakeelasticserver.com:9200",
-                "defaultIndex": "those_documents"
+                "defaultIndex": "prod_documents"
             },
             "ElasticsearchSettings": {
                 "defaultIndex": "ok"

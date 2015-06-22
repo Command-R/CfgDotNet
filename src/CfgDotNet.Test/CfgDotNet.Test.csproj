@@ -52,12 +52,14 @@
     <Compile Include="ReadingFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\ElasticsearchSettings.cs" />
+    <Compile Include="SettingsManagerTests.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="good-cfg.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
