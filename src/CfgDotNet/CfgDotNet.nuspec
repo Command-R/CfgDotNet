@@ -4,14 +4,14 @@
     <id>$id$</id>
     <version>$version$</version>
     <title>$title$</title>
-    <authors>Command-R Contributors</authors>
-    <owners>Command-R Contributors</owners>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
     <licenseUrl>https://github.com/Command-R/CfgDotNet/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/command-R/CfgDotNet</projectUrl>
+    <projectUrl>https://github.com/Command-R/CfgDotNet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright 2015</copyright>
+    <copyright>$copyright$</copyright>
     <tags>json config</tags>
   </metadata>
 </package>

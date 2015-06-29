@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("CfgDotNet")]
 [assembly: AssemblyDescription("A method of doing configuration with JSON files in .NET")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Command-R Contributors")]
 [assembly: AssemblyProduct("CfgDotNet")]
 [assembly: AssemblyCopyright("Copyright 2014-2015 Command-R Contributors")]
 [assembly: AssemblyTrademark("")]
