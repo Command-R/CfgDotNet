@@ -180,6 +180,12 @@ namespace CfgDotNet
         {
             return _settings;
         }
+
+        public static string GetSettingTypeName(Type type)
+        {
+            var declaringTypeName = type.DeclaringType != null ? type.DeclaringType.Name + "+" : string.Empty;
+            return declaringTypeName + type.Name;
+        }
     };
 
     /// <summary> ISettings provides an interface can be used to find Settings classes and Validate them. </summary>
@@ -223,12 +229,7 @@ namespace CfgDotNet
 
         protected static string GetSettingsName(ISettings setting)
         {
-            if (setting == null)
-                return null;
-
-            var type = setting.GetType();
-            var declaringTypeName = type.DeclaringType != null ? type.DeclaringType.Name + "+" : string.Empty;
-            return declaringTypeName + type.Name;
+            return setting == null ? null : SettingsManager.GetSettingTypeName(setting.GetType());
         }
 
         protected static void SetValue(Object obj, System.Reflection.PropertyInfo prop, Object value)
