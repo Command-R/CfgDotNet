@@ -232,9 +232,16 @@ namespace CfgDotNet
             return setting == null ? null : SettingsManager.GetSettingTypeName(setting.GetType());
         }
 
-        protected static void SetValue(Object obj, System.Reflection.PropertyInfo prop, Object value)
+        protected static void SetValue(object obj, System.Reflection.PropertyInfo prop, object value)
         {
-            prop.SetValue(obj, Convert.ChangeType(value, prop.PropertyType));
+            if (value != null && prop.PropertyType.IsEnum)
+            {
+                prop.SetValue(obj, Enum.Parse(prop.PropertyType, value.ToString()));
+            }
+            else
+            {
+                prop.SetValue(obj, Convert.ChangeType(value, prop.PropertyType));
+            }
         }
     };
 

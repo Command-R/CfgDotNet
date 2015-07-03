@@ -47,6 +47,13 @@ namespace CfgDotNet.Test
             Assert.AreEqual("prod_documents", setting.DefaultIndex);
         }
 
+        [Test]
+        public void CanReadEnum()
+        {
+            var setting = GetInstanceFromContainer<Settings>();
+            Assert.AreEqual(TestEnum.Value2, setting.Enum);
+        }
+
         private T GetInstanceFromContainer<T>() where T : ISettings
         {
             return (T)_container[typeof (T)];
@@ -56,7 +63,8 @@ namespace CfgDotNet.Test
         {
             public string SecurityKey { get; set; }
             public string ConnectionString { get; set; }
-        }
+            public TestEnum Enum { get; set; }
+        };
     }
 
     public class elasticsearch : BaseSettings
@@ -65,5 +73,11 @@ namespace CfgDotNet.Test
         public string Password { get; set; }
         public string BaseUrl { get; set; }
         public string DefaultIndex { get; set; }
-    }
+    };
+
+    public enum TestEnum
+    {
+        Value1,
+        Value2,
+    };
 }
