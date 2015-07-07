@@ -117,7 +117,7 @@ namespace CfgDotNet
                 var existingItem = existingEnvironment[newItem.Key];
                 existingItem.Merge(newItem.Value, new JsonMergeSettings
                 {
-                    MergeArrayHandling = MergeArrayHandling.Union
+                    MergeArrayHandling = MergeArrayHandling.Replace
                 });
             }
         }
