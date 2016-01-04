@@ -8,5 +8,6 @@ namespace CfgDotNet.Test.Model
         public string Password { get; set; }
         public Uri BaseUrl { get; set; }
         public string DefaultIndex { get; set; }
+        public TimeSpan Timeout { get; set; }
     }
 }

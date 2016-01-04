@@ -238,6 +238,10 @@ namespace CfgDotNet
             {
                 prop.SetValue(obj, Enum.Parse(prop.PropertyType, value.ToString()));
             }
+            else if (value is string && (prop.PropertyType == typeof (TimeSpan) || prop.PropertyType == typeof (TimeSpan?)))
+            {
+                prop.SetValue(obj, TimeSpan.Parse((string)value));
+            }
             else
             {
                 prop.SetValue(obj, Convert.ChangeType(value, prop.PropertyType));

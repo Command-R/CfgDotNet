@@ -54,6 +54,13 @@ namespace CfgDotNet.Test
             Assert.AreEqual(TestEnum.Value2, setting.Enum);
         }
 
+        [Test]
+        public void CanRead_TimeSpan()
+        {
+            var settings = GetInstanceFromContainer<Settings>();
+            Assert.AreEqual(60000d, settings.Timeout.TotalMilliseconds);
+        }
+
         private T GetInstanceFromContainer<T>() where T : ISettings
         {
             return (T)_container[typeof (T)];
@@ -64,6 +71,7 @@ namespace CfgDotNet.Test
             public string SecurityKey { get; set; }
             public string ConnectionString { get; set; }
             public TestEnum Enum { get; set; }
+            public TimeSpan Timeout { get; set; }
         };
     }
 

@@ -112,5 +112,12 @@ namespace CfgDotNet.Test
         {
             Assert.AreEqual("System.Data.SqlClient", _cfgManagerProd.ConnectionStrings["MainConnection"].ProviderName);
         }
+
+        [Test]
+        public void CanLoad_TimeSpan()
+        {
+            var timeout = _cfgManagerProd.GetConfigSection<ElasticsearchSettings>().Timeout;
+            Assert.AreEqual(60000d, timeout.TotalMilliseconds);
+        }
     }
 }
